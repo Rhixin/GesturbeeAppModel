@@ -51,21 +51,6 @@ export default function Home() {
                   <div className="text-[#6B7280] text-sm">
                     Confidence: {(prediction.confidence * 100).toFixed(2)}%
                   </div>
-
-                  {showStats && (
-                    <div className="mt-4 px-4 py-2 bg-[#104846] bg-opacity-10 rounded-lg text-xs">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="text-white">Processing time:</div>
-                        <div className="text-right text-[#FBBC05]">
-                          {prediction.processing_time.toFixed(2)} ms
-                        </div>
-                        <div className="text-white">Request frequency:</div>
-                        <div className="text-right text-[#FBBC05]">
-                          {prediction.request_frequency} req/sec
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </motion.div>
               ) : (
                 <motion.div
