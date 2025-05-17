@@ -62,22 +62,20 @@ export default function Home() {
       socketRef.current.emit("hand_data", handData);
     }
 
-    console.log("Result: ", prediction);
+    //console.log("Result: ", prediction);
   }, [handData]);
 
   useEffect(() => {
     if (prediction) {
-      // Send prediction to React Native WebView (if available)
-      if (window.ReactNativeWebView?.postMessage) {
-        window.ReactNativeWebView.postMessage(
-          JSON.stringify({
-            type: "prediction",
-            data: prediction,
-          })
-        );
-
-        console.log("📤 Sent prediction to WebView:", prediction);
-      }
+      // Send message to parent window (the page embedding your iframe)
+      window.parent.postMessage(
+        {
+          type: "prediction",
+          data: prediction,
+        },
+        "*" // or replace "*" with your parent origin for security
+      );
+      console.log("📤 Sent prediction to parent window:", prediction);
     }
   }, [prediction]);
 
