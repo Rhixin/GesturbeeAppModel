@@ -62,7 +62,7 @@ export default function Home() {
       socketRef.current.emit("hand_data", handData);
     }
 
-    console.log("📡 Sent handData:", handData);
+    console.log("Result: ", prediction);
   }, [handData]);
 
   useEffect(() => {
