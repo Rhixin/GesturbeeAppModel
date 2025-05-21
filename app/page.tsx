@@ -23,7 +23,7 @@ export default function Home() {
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
-    const socket = io("http://127.0.0.1:10000/");
+    const socket = io("https://aslmodelbackend.onrender.com/");
 
     socketRef.current = socket;
     setSocketStatus("connecting");
