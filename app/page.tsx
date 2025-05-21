@@ -65,17 +65,50 @@ export default function Home() {
     //console.log("Result: ", prediction);
   }, [handData]);
 
+  // useEffect(() => {
+  //   if (prediction) {
+  //     // Send message to parent window (the page embedding your iframe)
+  //     window.parent.postMessage(
+  //       {
+  //         type: "prediction",
+  //         data: prediction,
+  //       },
+  //       "*" // or replace "*" with your parent origin for security
+  //     );
+  //     console.log("📤 Sent prediction to parent window:", prediction);
+  //   }
+  // }, [prediction]);
+
   useEffect(() => {
     if (prediction) {
-      // Send message to parent window (the page embedding your iframe)
-      window.parent.postMessage(
-        {
-          type: "prediction",
-          data: prediction,
-        },
-        "*" // or replace "*" with your parent origin for security
-      );
-      console.log("📤 Sent prediction to parent window:", prediction);
+      // Instead of window.parent.postMessage
+      if (window.ReactNativeWebView) {
+        // For React Native WebView
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({
+            type: "prediction",
+            data: {
+              prediction: prediction,
+            },
+          })
+        );
+        console.log("📤 Sent prediction to React Native WebView:", prediction);
+      } else {
+        // Fallback for browser testing
+        window.parent.postMessage(
+          {
+            type: "prediction",
+            data: {
+              prediction: prediction,
+            },
+          },
+          "*"
+        );
+        console.log(
+          "📤 Sent prediction to parent window (browser mode):",
+          prediction
+        );
+      }
     }
   }, [prediction]);
 
