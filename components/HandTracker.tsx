@@ -129,8 +129,8 @@ const HandTracker = ({
 
       // Handle results from hand tracking
       hands.onResults((results: any) => {
-        const canvasWidth = 400;
-        const canvasHeight = 400;
+        const canvasWidth = canvasRef.current!.width;
+        const canvasHeight = canvasRef.current!.height;
 
         canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight); // Clear previous drawings
         if (results.image) {
@@ -203,8 +203,8 @@ const HandTracker = ({
         onFrame: async () => {
           await hands.send({ image: videoRef.current });
         },
-        width: 400,
-        height: 400,
+        width: 640,
+        height: 480,
       });
 
       camera.start();
@@ -221,13 +221,13 @@ const HandTracker = ({
   }, [scriptsLoaded]);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative">
+    <div className="flex flex-col items-center justify-center w-full h-full">
+      <div className="relative w-full h-full flex items-center justify-center">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 rounded">
-            <div className="text-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 rounded z-10">
+            <div className="text-center text-white">
               <div className="mb-2">Loading hand tracking...</div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-300">
                 {!scriptsLoaded
                   ? "Loading MediaPipe libraries..."
                   : "Initializing camera..."}
@@ -238,16 +238,24 @@ const HandTracker = ({
         <video
           ref={videoRef}
           style={{ display: "none" }}
-          width={400}
-          height={400}
+          width={640}
+          height={480}
           autoPlay
           playsInline
         />
         <canvas
           ref={canvasRef}
-          width={400}
-          height={400}
-          className="border border-gray-300 rounded"
+          width={640}
+          height={480}
+          className="rounded"
+          style={{
+            width: "100%",
+            height: "100%",
+            maxWidth: "640px",
+            maxHeight: "480px",
+            objectFit: "contain",
+            display: "block"
+          }}
         />
       </div>
 

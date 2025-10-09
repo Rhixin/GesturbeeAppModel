@@ -89,8 +89,10 @@ export default function AlphabetsPage() {
   }, [prediction]);
 
   return (
-    <div className="flex justify-center items-center h-[100vh] w-full">
-      <HandTracker handData={handData} setHandData={setHandData} />
+    <div className="flex justify-center items-center h-[100vh] w-full bg-black">
+      <div className="w-full h-full max-w-full max-h-full flex items-center justify-center">
+        <HandTracker handData={handData} setHandData={setHandData} />
+      </div>
     </div>
   );
 }
