@@ -286,13 +286,14 @@ const HolisticTracker = ({
         }
       });
 
-      // Initialize camera
+      // Initialize camera - FORCE 640x480 (landscape aspect ratio) in all orientations
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
         width: 640,
         height: 480,
+        facingMode: 'user',
       });
 
       camera.start();
