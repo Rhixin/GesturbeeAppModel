@@ -287,33 +287,33 @@ const HolisticTracker = ({
         }
       });
 
+      // Set up video metadata listener BEFORE starting camera
+      if (videoRef.current) {
+        const video = videoRef.current;
+        video.onloadedmetadata = () => {
+          const videoWidth = video.videoWidth;
+          const videoHeight = video.videoHeight;
+
+          console.log(`📹 Camera resolution: ${videoWidth}x${videoHeight}`);
+
+          // Update canvas size to match camera's aspect ratio
+          if (videoWidth > 0 && videoHeight > 0) {
+            setCanvasSize({ width: videoWidth, height: videoHeight });
+          }
+        };
+      }
+
       // Initialize camera with mobile-friendly constraints
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-        facingMode: "user",
+        width: 1280,
+        height: 720,
       });
 
-      // Wait for camera to start, then adjust canvas to match video resolution
-      camera.start().then(() => {
-        if (videoRef.current) {
-          const video = videoRef.current;
-          // Wait for video metadata to load
-          video.onloadedmetadata = () => {
-            const videoWidth = video.videoWidth;
-            const videoHeight = video.videoHeight;
-
-            console.log(`📹 Camera resolution: ${videoWidth}x${videoHeight}`);
-
-            // Update canvas size to match camera's aspect ratio
-            setCanvasSize({ width: videoWidth, height: videoHeight });
-          };
-        }
-        setIsLoading(false);
-      });
+      camera.start();
+      setIsLoading(false);
 
       return () => {
         camera.stop();
