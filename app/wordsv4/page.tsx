@@ -34,7 +34,9 @@ export default function WordsV4Page() {
       console.error("❌ [WordsV4] Prediction error:", error);
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
