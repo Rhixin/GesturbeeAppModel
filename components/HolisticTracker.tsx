@@ -21,6 +21,7 @@ const HolisticTracker = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 640, height: 480 });
 
   // Load MediaPipe scripts
   useEffect(() => {
@@ -296,8 +297,23 @@ const HolisticTracker = ({
         facingMode: "user",
       });
 
-      camera.start();
-      setIsLoading(false);
+      // Wait for camera to start, then adjust canvas to match video resolution
+      camera.start().then(() => {
+        if (videoRef.current) {
+          const video = videoRef.current;
+          // Wait for video metadata to load
+          video.onloadedmetadata = () => {
+            const videoWidth = video.videoWidth;
+            const videoHeight = video.videoHeight;
+
+            console.log(`📹 Camera resolution: ${videoWidth}x${videoHeight}`);
+
+            // Update canvas size to match camera's aspect ratio
+            setCanvasSize({ width: videoWidth, height: videoHeight });
+          };
+        }
+        setIsLoading(false);
+      });
 
       return () => {
         camera.stop();
@@ -332,8 +348,8 @@ const HolisticTracker = ({
         />
         <canvas
           ref={canvasRef}
-          width={640}
-          height={480}
+          width={canvasSize.width}
+          height={canvasSize.height}
           className="rounded"
           style={{
             width: "auto",
@@ -343,7 +359,6 @@ const HolisticTracker = ({
             objectFit: "contain",
             display: "block",
             transform: "scaleX(-1)",
-            aspectRatio: "4 / 3"
           }}
         />
       </div>
