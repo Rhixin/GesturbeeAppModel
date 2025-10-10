@@ -60,6 +60,13 @@ export default function AlphabetsPage() {
 
   useEffect(() => {
     if (prediction) {
+      console.log("🔤 [Alphabets] Prediction Details:", {
+        prediction: prediction.prediction || prediction,
+        confidence: prediction.confidence,
+        isWebView: !!window.ReactNativeWebView,
+        timestamp: new Date().toISOString()
+      });
+
       // Send to React Native WebView
       if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(
@@ -71,7 +78,7 @@ export default function AlphabetsPage() {
             },
           })
         );
-        console.log("📤 [Alphabets] Sent to React Native:", prediction);
+        console.log("📤 [Alphabets] Sent to React Native WebView:", prediction.prediction || prediction);
       } else {
         // Fallback for browser testing
         window.parent.postMessage(
@@ -84,6 +91,7 @@ export default function AlphabetsPage() {
           },
           "*"
         );
+        console.log("📤 [Alphabets] Sent to Browser (not WebView):", prediction.prediction || prediction);
       }
     }
   }, [prediction]);

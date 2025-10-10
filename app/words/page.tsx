@@ -64,6 +64,13 @@ export default function WordsPage() {
 
   useEffect(() => {
     if (prediction) {
+      console.log("📊 [Words] Prediction Details:", {
+        topPrediction: prediction.top_prediction,
+        confidence: prediction.confidence,
+        isWebView: !!window.ReactNativeWebView,
+        timestamp: new Date().toISOString()
+      });
+
       // Send to React Native WebView
       if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(
@@ -75,7 +82,7 @@ export default function WordsPage() {
             },
           })
         );
-        console.log("📤 [Words] Sent to React Native:", prediction);
+        console.log("📤 [Words] Sent to React Native WebView:", prediction.top_prediction);
       } else {
         // Fallback for browser testing
         window.parent.postMessage(
@@ -88,6 +95,7 @@ export default function WordsPage() {
           },
           "*"
         );
+        console.log("📤 [Words] Sent to Browser (not WebView):", prediction.top_prediction);
       }
     }
   }, [prediction]);

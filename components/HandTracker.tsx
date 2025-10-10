@@ -254,7 +254,8 @@ const HandTracker = ({
             maxWidth: "640px",
             maxHeight: "480px",
             objectFit: "contain",
-            display: "block"
+            display: "block",
+            transform: "scaleX(-1)"
           }}
         />
       </div>
