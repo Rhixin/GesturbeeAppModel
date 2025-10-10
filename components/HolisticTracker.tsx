@@ -131,8 +131,20 @@ const HolisticTracker = ({
 
       // Handle results from holistic tracking
       holistic.onResults((results: any) => {
-        const canvasWidth = canvasRef.current!.width;
-        const canvasHeight = canvasRef.current!.height;
+        if (!canvasRef.current) return;
+
+        // Use the actual image dimensions to prevent distortion
+        const imageWidth = results.image?.width || canvasRef.current.width;
+        const imageHeight = results.image?.height || canvasRef.current.height;
+
+        // Update canvas size if image dimensions changed
+        if (canvasRef.current.width !== imageWidth || canvasRef.current.height !== imageHeight) {
+          canvasRef.current.width = imageWidth;
+          canvasRef.current.height = imageHeight;
+        }
+
+        const canvasWidth = canvasRef.current.width;
+        const canvasHeight = canvasRef.current.height;
 
         canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
         if (results.image) {
@@ -316,13 +328,11 @@ const HolisticTracker = ({
         }
       }
 
-      // Initialize camera - let it choose best resolution for device
+      // Initialize camera - NO constraints, use camera's native resolution
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
       });
 
       camera.start();
