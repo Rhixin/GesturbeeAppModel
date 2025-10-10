@@ -101,17 +101,8 @@ export default function WordsPage() {
   }, [prediction]);
 
   return (
-    <div className="flex justify-center items-center h-[100vh] w-full bg-black relative overflow-hidden">
-      {/* Rotated camera container for landscape mode while app is portrait */}
-      <div
-        className="flex items-center justify-center"
-        style={{
-          transform: 'rotate(90deg)',
-          transformOrigin: 'center center',
-          width: '100vh', // Swap width/height for rotation
-          height: '100vw',
-        }}
-      >
+    <div className="flex justify-center items-center h-[100vh] w-full bg-black relative">
+      <div className="w-full h-full max-w-full max-h-full flex items-center justify-center">
         <HolisticTracker
           holisticData={holisticData}
           setHolisticData={setHolisticData}
@@ -120,7 +111,7 @@ export default function WordsPage() {
 
       {/* On-screen prediction display */}
       {prediction && (
-        <div className="absolute top-4 left-4 right-4 bg-black bg-opacity-80 text-white p-4 rounded-lg z-50">
+        <div className="absolute top-4 left-4 right-4 bg-black bg-opacity-80 text-white p-4 rounded-lg">
           <div className="text-3xl font-bold text-center">
             {prediction.top_prediction}
           </div>
