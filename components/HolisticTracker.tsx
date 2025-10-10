@@ -286,13 +286,14 @@ const HolisticTracker = ({
         }
       });
 
-      // Initialize camera
+      // Initialize camera with mobile-friendly constraints
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
-        width: 640,
-        height: 480,
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        facingMode: "user",
       });
 
       camera.start();
@@ -326,8 +327,6 @@ const HolisticTracker = ({
         <video
           ref={videoRef}
           style={{ display: "none" }}
-          width={640}
-          height={480}
           autoPlay
           playsInline
         />
