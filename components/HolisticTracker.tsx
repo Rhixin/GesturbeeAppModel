@@ -21,7 +21,6 @@ const HolisticTracker = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
-  const [videoDimensions, setVideoDimensions] = useState({ width: 0, height: 0 });
 
   // Load MediaPipe scripts
   useEffect(() => {
@@ -131,20 +130,8 @@ const HolisticTracker = ({
 
       // Handle results from holistic tracking
       holistic.onResults((results: any) => {
-        if (!canvasRef.current) return;
-
-        // Use the actual image dimensions to prevent distortion
-        const imageWidth = results.image?.width || canvasRef.current.width;
-        const imageHeight = results.image?.height || canvasRef.current.height;
-
-        // Update canvas size if image dimensions changed
-        if (canvasRef.current.width !== imageWidth || canvasRef.current.height !== imageHeight) {
-          canvasRef.current.width = imageWidth;
-          canvasRef.current.height = imageHeight;
-        }
-
-        const canvasWidth = canvasRef.current.width;
-        const canvasHeight = canvasRef.current.height;
+        const canvasWidth = canvasRef.current!.width;
+        const canvasHeight = canvasRef.current!.height;
 
         canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
         if (results.image) {
@@ -299,40 +286,13 @@ const HolisticTracker = ({
         }
       });
 
-      // Set up video metadata listener to capture actual camera dimensions
-      if (videoRef.current) {
-        const video = videoRef.current;
-
-        const updateDimensions = () => {
-          const videoWidth = video.videoWidth;
-          const videoHeight = video.videoHeight;
-
-          if (videoWidth > 0 && videoHeight > 0) {
-            console.log(`📹 Camera native resolution: ${videoWidth}x${videoHeight}`);
-            console.log(`📐 Aspect ratio: ${(videoWidth/videoHeight).toFixed(2)}`);
-
-            setVideoDimensions({ width: videoWidth, height: videoHeight });
-
-            // Update canvas to match EXACT video dimensions
-            if (canvasRef.current) {
-              canvasRef.current.width = videoWidth;
-              canvasRef.current.height = videoHeight;
-            }
-          }
-        };
-
-        video.onloadedmetadata = updateDimensions;
-        // Also try immediately in case metadata is already loaded
-        if (video.readyState >= 1) {
-          updateDimensions();
-        }
-      }
-
-      // Initialize camera - NO constraints, use camera's native resolution
+      // Initialize camera
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
+        width: 640,
+        height: 480,
       });
 
       camera.start();
@@ -366,22 +326,25 @@ const HolisticTracker = ({
         <video
           ref={videoRef}
           style={{ display: "none" }}
+          width={640}
+          height={480}
           autoPlay
           playsInline
         />
         <canvas
           ref={canvasRef}
-          width={videoDimensions.width || 640}
-          height={videoDimensions.height || 480}
+          width={640}
+          height={480}
           className="rounded"
           style={{
-            width: "100%",
-            height: "100%",
+            width: "auto",
+            height: "auto",
             maxWidth: "100%",
             maxHeight: "100%",
             objectFit: "contain",
             display: "block",
             transform: "scaleX(-1)",
+            aspectRatio: "4 / 3"
           }}
         />
       </div>
