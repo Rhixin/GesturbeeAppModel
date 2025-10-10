@@ -21,6 +21,33 @@ const HolisticTracker = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 640, height: 480 });
+
+  // Detect orientation and set appropriate dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      const isPortrait = window.innerHeight > window.innerWidth;
+      if (isPortrait) {
+        // Portrait: Use 480x640 (taller than wide)
+        setDimensions({ width: 480, height: 640 });
+      } else {
+        // Landscape: Use 640x480 (wider than tall)
+        setDimensions({ width: 640, height: 480 });
+      }
+    };
+
+    // Set initial dimensions
+    updateDimensions();
+
+    // Listen for orientation changes
+    window.addEventListener('resize', updateDimensions);
+    window.addEventListener('orientationchange', updateDimensions);
+
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('orientationchange', updateDimensions);
+    };
+  }, []);
 
   // Load MediaPipe scripts
   useEffect(() => {
@@ -100,9 +127,11 @@ const HolisticTracker = ({
     return flattened;
   };
 
-  // Initialize holistic tracking after scripts are loaded
+  // Initialize holistic tracking after scripts are loaded and dimensions are set
   useEffect(() => {
     if (!scriptsLoaded || !videoRef.current || !canvasRef.current) return;
+
+    console.log(`[HolisticTracker] Initializing with dimensions: ${dimensions.width}x${dimensions.height}`);
 
     const canvasCtx = canvasRef.current.getContext("2d");
     if (!canvasCtx) {
@@ -286,13 +315,13 @@ const HolisticTracker = ({
         }
       });
 
-      // Initialize camera - FORCE 640x480 (landscape aspect ratio) in all orientations
+      // Initialize camera with dynamic dimensions based on orientation
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           await holistic.send({ image: videoRef.current });
         },
-        width: 640,
-        height: 480,
+        width: dimensions.width,
+        height: dimensions.height,
         facingMode: 'user',
       });
 
@@ -307,7 +336,7 @@ const HolisticTracker = ({
       console.error("Error initializing MediaPipe Holistic:", error);
       setIsLoading(false);
     }
-  }, [scriptsLoaded]);
+  }, [scriptsLoaded, dimensions]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-black">
@@ -327,19 +356,19 @@ const HolisticTracker = ({
         <video
           ref={videoRef}
           style={{ display: "none" }}
-          width={640}
-          height={480}
+          width={dimensions.width}
+          height={dimensions.height}
           autoPlay
           playsInline
         />
         <canvas
           ref={canvasRef}
-          width={640}
-          height={480}
+          width={dimensions.width}
+          height={dimensions.height}
           className="rounded"
           style={{
-            width: "640px",
-            height: "480px",
+            width: `${dimensions.width}px`,
+            height: `${dimensions.height}px`,
             maxWidth: "100%",
             maxHeight: "100%",
             objectFit: "contain",
