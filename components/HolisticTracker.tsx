@@ -309,7 +309,7 @@ const HolisticTracker = ({
   }, [scriptsLoaded]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
+    <div className="flex flex-col items-center justify-center w-full h-full bg-black">
       <div className="relative w-full h-full flex items-center justify-center">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 rounded z-10">
@@ -337,13 +337,14 @@ const HolisticTracker = ({
           height={480}
           className="rounded"
           style={{
-            width: "100%",
-            height: "100%",
-            maxWidth: "640px",
-            maxHeight: "480px",
+            width: "auto",
+            height: "auto",
+            maxWidth: "100%",
+            maxHeight: "100%",
             objectFit: "contain",
             display: "block",
-            transform: "scaleX(-1)"
+            transform: "scaleX(-1)",
+            aspectRatio: "4 / 3"
           }}
         />
       </div>

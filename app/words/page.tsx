@@ -101,13 +101,25 @@ export default function WordsPage() {
   }, [prediction]);
 
   return (
-    <div className="flex justify-center items-center h-[100vh] w-full bg-black">
+    <div className="flex justify-center items-center h-[100vh] w-full bg-black relative">
       <div className="w-full h-full max-w-full max-h-full flex items-center justify-center">
         <HolisticTracker
           holisticData={holisticData}
           setHolisticData={setHolisticData}
         />
       </div>
+
+      {/* On-screen prediction display */}
+      {prediction && (
+        <div className="absolute top-4 left-4 right-4 bg-black bg-opacity-80 text-white p-4 rounded-lg">
+          <div className="text-3xl font-bold text-center">
+            {prediction.top_prediction}
+          </div>
+          <div className="text-sm text-center text-gray-300 mt-2">
+            {(prediction.confidence * 100).toFixed(1)}% confidence
+          </div>
+        </div>
+      )}
     </div>
   );
 }
