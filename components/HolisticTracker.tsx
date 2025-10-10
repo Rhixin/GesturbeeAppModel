@@ -338,14 +338,13 @@ const HolisticTracker = ({
           height={480}
           className="rounded"
           style={{
-            width: "auto",
-            height: "auto",
+            width: "640px",
+            height: "480px",
             maxWidth: "100%",
             maxHeight: "100%",
             objectFit: "contain",
             display: "block",
             transform: "scaleX(-1)",
-            aspectRatio: "4 / 3"
           }}
         />
       </div>
