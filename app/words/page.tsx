@@ -47,7 +47,9 @@ export default function WordsPage() {
     });
 
     socket.on("lstm_buffering", (status) => {
-      console.log(`📊 [Words] Buffering: ${status.buffer_size}/${status.target_frames} frames (${status.frames_needed} more needed)`);
+      console.log(
+        `📊 [Words] Buffering: ${status.buffer_size}/${status.target_frames} frames (${status.frames_needed} more needed)`
+      );
     });
 
     return () => {
@@ -68,7 +70,7 @@ export default function WordsPage() {
         topPrediction: prediction.top_prediction,
         confidence: prediction.confidence,
         isWebView: !!window.ReactNativeWebView,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Send to React Native WebView
@@ -82,7 +84,10 @@ export default function WordsPage() {
             },
           })
         );
-        console.log("📤 [Words] Sent to React Native WebView:", prediction.top_prediction);
+        console.log(
+          "📤 [Words] Sent to React Native WebView:",
+          prediction.top_prediction
+        );
       } else {
         // Fallback for browser testing
         window.parent.postMessage(
@@ -95,7 +100,10 @@ export default function WordsPage() {
           },
           "*"
         );
-        console.log("📤 [Words] Sent to Browser (not WebView):", prediction.top_prediction);
+        console.log(
+          "📤 [Words] Sent to Browser (not WebView):",
+          prediction.top_prediction
+        );
       }
     }
   }, [prediction]);
@@ -109,7 +117,7 @@ export default function WordsPage() {
         />
       </div>
 
-      {/* On-screen prediction display */}
+      {/* On-screen prediction display
       {prediction && (
         <div className="absolute top-4 left-4 right-4 bg-black bg-opacity-80 text-white p-4 rounded-lg">
           <div className="text-3xl font-bold text-center">
@@ -119,7 +127,7 @@ export default function WordsPage() {
             {(prediction.confidence * 100).toFixed(1)}% confidence
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
